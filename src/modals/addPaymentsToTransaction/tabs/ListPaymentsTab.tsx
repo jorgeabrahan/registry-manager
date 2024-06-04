@@ -104,7 +104,7 @@ export const ListPaymentsTab: React.FC<ListPaymentsTabProps> = ({
           <p className='text-dove-gray-300'>Aun no hay pagos registrados.</p>
         </div>
       )}
-      <ul className='grid gap-3 overflow-y-auto h-[calc(100%-50px)]'>
+      <ul className='flex flex-col gap-3 overflow-y-auto h-[calc(100%-50px)]'>
         {transaction.payments?.map((payment) => (
           <ListPayment
             key={payment.id}
