@@ -129,7 +129,7 @@ export const Signup: React.FC<SignupProps> = ({ setActiveTab = () => {} }) => {
     errors.push(onInputError(SignupFields.email, checkEmail(email)))
     errors.push(onInputError(SignupFields.password, checkPass(password)))
     errors.push(
-      onInputError(SignupFields.passwordConfirmation, checkPassConfirm(passwordConfirmation))
+      onInputError(SignupFields.passwordConfirmation, checkPassConfirm(password, passwordConfirmation))
     )
     if (errors.includes(true)) return
     validateLicense()
