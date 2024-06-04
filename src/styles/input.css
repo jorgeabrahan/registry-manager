@@ -20,6 +20,23 @@ body {
   scrollbar-width: none;  /* Firefox */
 }
 
+.mini-scrollbar::-webkit-scrollbar {
+  @apply bg-tundora-200 rounded-[100px] h-2 w-2
+}
+.mini-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-shark-600 rounded-[100px] cursor-pointer
+}
+.mini-scrollbar::-webkit-scrollbar-thumb:active {
+  @apply bg-shark-700
+}
+
+.truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+
 details > summary {
   list-style: none;
 }
@@ -31,4 +48,145 @@ details > summary::-webkit-details-marker {
 details > summary:before {
   content: '';
   display: none;
+}
+
+select {
+  appearance: none;
+  -moz-appearance: none; /* Firefox */
+  -webkit-appearance: none; /* Safari and Chrome */
+}
+
+/* Bree Serif */
+@font-face {
+  font-family: 'Bree Serif';
+  src: url('../fonts/bree_serif/BreeSerif-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+
+/* Poppins */
+@font-face {
+  font-family: 'Poppins';
+  src: url('../fonts/poppins/Poppins-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../fonts/poppins/Poppins-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../fonts/poppins/Poppins-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../fonts/poppins/Poppins-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../fonts/poppins/Poppins-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../fonts/poppins/Poppins-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../fonts/poppins/Poppins-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../fonts/poppins/Poppins-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('../fonts/poppins/Poppins-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* Inconsolata */
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('../fonts/inconsolata/Inconsolata-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('../fonts/inconsolata/Inconsolata-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('../fonts/inconsolata/Inconsolata-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('../fonts/inconsolata/Inconsolata-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('../fonts/inconsolata/Inconsolata-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('../fonts/inconsolata/Inconsolata-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('../fonts/inconsolata/Inconsolata-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('../fonts/inconsolata/Inconsolata-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('../fonts/inconsolata/Inconsolata-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
 }

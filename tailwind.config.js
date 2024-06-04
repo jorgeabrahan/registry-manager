@@ -1,14 +1,19 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/**/*.{html,js,jsx}"],
+  content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
   theme: {
     fontFamily: {
-      'sans': ['Poppins', 'sans-serif'],
-      'serif': ['Bree Serif', 'serif']
+      sans: ['Poppins', 'sans-serif'],
+      serif: ['Bree Serif', 'serif'],
+      mono: ['Inconsolata', 'monospace']
     },
     extend: {
+      screens: {
+        '-md': { max: '767px' },
+        xs: '480px'
+      },
       colors: {
-        'mantis': {
+        mantis: {
           50: '#f6faf3',
           100: '#e9f5e3',
           200: '#d3eac8',
@@ -19,9 +24,9 @@ export default {
           700: '#3d692c',
           800: '#345427',
           900: '#2b4522',
-          950: '#13250e',
+          950: '#13250e'
         },
-        'wewak': {
+        wewak: {
           50: '#fdf3f4',
           100: '#fbe8eb',
           200: '#f6d5da',
@@ -32,7 +37,7 @@ export default {
           700: '#a22e4f',
           800: '#882947',
           900: '#752642',
-          950: '#411020',
+          950: '#411020'
         },
         'blue-chill': {
           50: '#f2f9f9',
@@ -45,7 +50,7 @@ export default {
           700: '#356169',
           800: '#325158',
           900: '#2d464c',
-          950: '#1a2c32',
+          950: '#1a2c32'
         },
         'dove-gray': {
           50: '#f5f5f6',
@@ -58,9 +63,9 @@ export default {
           700: '#4d4d51',
           800: '#444446',
           900: '#3c3c3d',
-          950: '#262527',
+          950: '#262527'
         },
-        'tundora': {
+        tundora: {
           50: '#f5f5f6',
           100: '#e6e6e7',
           200: '#cfd0d2',
@@ -71,9 +76,9 @@ export default {
           700: '#4d4d51',
           800: '#424245',
           900: '#3b3b3e',
-          950: '#262527',
+          950: '#262527'
         },
-        'shark': {
+        shark: {
           50: '#f5f5f6',
           100: '#e6e6e7',
           200: '#d0d0d1',
@@ -84,11 +89,23 @@ export default {
           700: '#4e4f50',
           800: '#444446',
           900: '#252526',
-          950: '#1f1f1f',
-        },      
+          950: '#1f1f1f'
+        },
+        orange: {
+          50: '#fff4ed',
+          100: '#ffe6d4',
+          200: '#ffc9a9',
+          300: '#ff955c',
+          400: '#fe7239',
+          500: '#fc4c13',
+          600: '#ed3209',
+          700: '#c52209',
+          800: '#9c1c10',
+          900: '#7e1a10',
+          950: '#440a06'
+        }
       }
-    },
+    }
   },
-  plugins: [],
+  plugins: []
 }
-
