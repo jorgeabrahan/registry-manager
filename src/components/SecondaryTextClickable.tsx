@@ -1,4 +1,4 @@
-import { TypographyVariants } from '@/lib/enums'
+import { TypographyVariants, TypographyWeights } from '@/lib/enums'
 import { AnchorRelType, AnchorTargetType } from '@/lib/types'
 import { Typography } from './Typography'
 
