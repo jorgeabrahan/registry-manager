@@ -8,7 +8,7 @@ import {
 import { useConfirmModal, useForm } from '@/hooks'
 import { ClientModal } from '@/modals/client'
 import { ArticleType, ClientType } from '@/lib/types/registries'
-import { formatHNL, formatInputDate } from '@/lib/utils'
+import { calcDaysInMonth, formatHNL, formatInputDate } from '@/lib/utils'
 import {
   calcClientTotal,
   calcClientsTotal,
@@ -18,10 +18,14 @@ import {
 import { useEffect, useState } from 'react'
 import { currentRegistryStore } from './currentRegistryStore'
 import { ClientModalTabs } from '@/lib/enums'
+import { MONTHS } from '../constants'
+import toast from 'react-hot-toast'
 
 const INITIAL_CLIENT_MODAL = { client: null, activeTab: ClientModalTabs.articles }
 
 export const RegistryTable: React.FC<RegistryTableProps> = ({
+  year,
+  month,
   handleUpdateBreadcrumbDate = () => {}
 }) => {
   const { showConfirmModal } = useConfirmModal()
@@ -38,7 +42,7 @@ export const RegistryTable: React.FC<RegistryTableProps> = ({
     client: ClientType | null
     activeTab: ClientModalTabs
   }>(INITIAL_CLIENT_MODAL)
-  const { date, onInputChange } = useForm({
+  const { date, onInputChange, setInputValue } = useForm({
     date: formatInputDate(currentRegistry.date)
   })
   useEffect(() => {
@@ -51,18 +55,16 @@ export const RegistryTable: React.FC<RegistryTableProps> = ({
     }
   }, [])
 
-  const onDateInputChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    const tempDate = new Date(target?.value)
+  const updateBreadcrumbOnDateChange = (selectedDate: Date) => {
     const previousDate = new Date(currentRegistry.date)
-    if (
-      previousDate.getFullYear() === tempDate.getFullYear() &&
-      previousDate.getMonth() === tempDate.getMonth()
+    const yearAndMonthHasntChanged =
+      previousDate.getFullYear() === selectedDate.getFullYear() &&
+      previousDate.getMonth() === selectedDate.getMonth()
+    if (yearAndMonthHasntChanged) return
+    handleUpdateBreadcrumbDate(
+      selectedDate.getFullYear().toString(),
+      selectedDate.getMonth().toString()
     )
-      return
-    if (!isNaN(tempDate.getTime())) {
-      handleUpdateBreadcrumbDate(tempDate.getFullYear().toString(), tempDate.getMonth().toString())
-      updateDate(tempDate.toISOString())
-    }
   }
   const handleRemoveArticles = (purgedArticles: ArticleType[], priceOfArticlesToRemove: number) => {
     if (clientModal?.client?.id == null) return
@@ -99,6 +101,37 @@ export const RegistryTable: React.FC<RegistryTableProps> = ({
       }
     })
   }
+  const maxDaysInCurrentMonth = calcDaysInMonth(month, year)
+  const handleDateUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const [selectedYear, selectedMonth, selectedDay] = e.target.value.split('-').map(Number)
+    const selectedMonthIndex = selectedMonth - 1
+    const selectedDate = new Date(selectedYear, selectedMonthIndex, selectedDay)
+    const isInvalidDate =
+      isNaN(selectedYear) ||
+      isNaN(selectedMonth) ||
+      isNaN(selectedDay) ||
+      isNaN(selectedDate.getTime())
+    if (isInvalidDate) {
+      setInputValue('date', formatInputDate(currentRegistry.date))
+      return
+    }
+    if (selectedDay > maxDaysInCurrentMonth) {
+      setInputValue('date', formatInputDate(currentRegistry.date))
+      toast.error('El día seleccionado es mayor que el máximo de días del mes seleccionado.')
+      return
+    }
+    const yearOrMonthChanged =
+      selectedYear !== parseInt(year, 10) ||
+      selectedMonthIndex !== MONTHS.findIndex((m) => m === month)
+    if (currentRegistry?.isEditing && yearOrMonthChanged) {
+      setInputValue('date', formatInputDate(currentRegistry.date))
+      toast.error('No se puede cambiar el año o mes cuando se está editando el registro.')
+      return
+    }
+    if (!currentRegistry?.isEditing) updateBreadcrumbOnDateChange(selectedDate)
+
+    updateDate(selectedDate.toISOString())
+  }
   return (
     <>
       <section className='my-4 flex justify-between items-center'>
@@ -112,10 +145,31 @@ export const RegistryTable: React.FC<RegistryTableProps> = ({
           isFullWidth={false}
           slug='date'
           value={date}
-          isDisabled={currentRegistry?.isEditing}
+          min={
+            currentRegistry?.isEditing
+              ? formatInputDate(
+                  new Date(
+                    parseInt(year, 10),
+                    MONTHS.findIndex((m) => m === month),
+                    1
+                  ).toISOString()
+                )
+              : ''
+          }
+          max={
+            currentRegistry?.isEditing
+              ? formatInputDate(
+                  new Date(
+                    parseInt(year, 10),
+                    MONTHS.findIndex((m) => m === month),
+                    maxDaysInCurrentMonth
+                  ).toISOString()
+                )
+              : ''
+          }
           handleChange={(e) => {
             onInputChange(e)
-            onDateInputChange(e)
+            handleDateUpdate(e)
           }}
         />
       </section>
@@ -161,5 +215,7 @@ export const RegistryTable: React.FC<RegistryTableProps> = ({
 }
 
 type RegistryTableProps = {
+  year: string
+  month: string
   handleUpdateBreadcrumbDate: (year: string, month: string) => void
 }
