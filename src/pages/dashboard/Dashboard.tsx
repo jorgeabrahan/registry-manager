@@ -112,6 +112,8 @@ export const Dashboard = () => {
         )}
         {isPathComplete() && (
           <RegistryView
+            month={getItem(DashboardBreadcrumbItems.month)}
+            year={getItem(DashboardBreadcrumbItems.year)}
             handleUpdateBreadcrumbDate={(year, month) => {
               const monthNumber = parseInt(month, 10)
               if (isNaN(monthNumber)) return
