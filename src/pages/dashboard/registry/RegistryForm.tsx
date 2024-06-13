@@ -307,6 +307,7 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
         <Field
           slug='price'
           value={price}
+          type='number'
           handleChange={onInputChange}
           formErrors={formErrors}
           isRequired
