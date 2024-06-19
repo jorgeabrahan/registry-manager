@@ -2,7 +2,7 @@ import { dbGetMonthRegistries, dbRemoveRegistry, dbRemoveSelectedRegistries } fr
 import { useConfirmModal } from '@/hooks'
 import { CurrentRegistryType, MergedRegistriesType, RegistryType } from '@/lib/types/registries'
 import { formatDateFriendly } from '@/lib/utils'
-import { mergeRegistries, sortRegistriesByDate } from '@/lib/utils/registryUtils'
+import { mergeRegistries, sortRegistriesNewestFirst } from '@/lib/utils/registryUtils'
 import { MergedRegistriesModal } from '@/modals/mergedRegistries'
 import { navStore, registriesStore } from '@/zustand'
 import React, { useEffect, useState } from 'react'
@@ -165,7 +165,7 @@ export const RegistriesTab: React.FC<RegistriesTabProps> = ({
         <p className='text-center text-sm text-white/70 py-20'>{message}</p>
       )}
       <section className='grid gap-5 my-5'>
-        {sortRegistriesByDate(storeRegistries.months[`${year}-${month}`])?.map((registry) => (
+        {sortRegistriesNewestFirst(storeRegistries.months[`${year}-${month}`])?.map((registry) => (
           <Registry
             key={registry?.id}
             registry={registry}

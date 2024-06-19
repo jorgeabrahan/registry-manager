@@ -152,8 +152,8 @@ export const mergeRegistries = (registries: RegistryType[] = []) => {
   }
 }
 
-export const sortRegistriesByDate = (registries: RegistryType[] = []) => {
-  return registries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+export const sortRegistriesNewestFirst = (registries: RegistryType[] = []) => {
+  return registries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 export const calcMonthTotal = (registries: RegistryType[] = []) => {
