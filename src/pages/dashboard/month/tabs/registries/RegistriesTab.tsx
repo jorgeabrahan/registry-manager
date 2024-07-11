@@ -1,4 +1,8 @@
-import { dbGetMonthRegistries, dbRemoveRegistry, dbRemoveSelectedRegistries } from '@/firebase/db/registries'
+import {
+  dbGetMonthRegistries,
+  dbRemoveRegistry,
+  dbRemoveSelectedRegistries
+} from '@/firebase/db/registries'
 import { useConfirmModal } from '@/hooks'
 import { CurrentRegistryType, MergedRegistriesType, RegistryType } from '@/lib/types/registries'
 import { formatDateFriendly } from '@/lib/utils'
@@ -147,6 +151,29 @@ export const RegistriesTab: React.FC<RegistriesTabProps> = ({
     )
     setMergedRegistries(mergeRegistries(selected))
   }
+  const handleCombineWeek = () => {
+    const currentMonthRegistries = storeRegistries.months[`${year}-${month}`]
+    const currentDate = new Date()
+    const startOfWeek =
+      currentDate.getDate() - currentDate.getDay() + (currentDate.getDay() === 0 ? -6 : 1)
+    const endOfWeek = startOfWeek + 6
+    const startDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      startOfWeek
+    ).toISOString()
+    const endDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      endOfWeek
+    ).toISOString()
+
+    const weekRegistries = currentMonthRegistries.filter((registry) => {
+      const registryDate = new Date(registry.date)
+      return registryDate >= new Date(startDate) && registryDate <= new Date(endDate)
+    })
+    setMergedRegistries(mergeRegistries(weekRegistries))
+  }
   const handleEdit = (registry: RegistryType) => {
     clearSelectedRegistries()
     const registryCopy = { ...registry, isEditing: true }
@@ -155,11 +182,14 @@ export const RegistriesTab: React.FC<RegistriesTabProps> = ({
   return (
     <>
       <RegistriesNav
+        year={year}
+        month={month}
         isFetching={!monthFetched}
         handleReload={handleReload}
         handleCreate={handleCreate}
         handleRemoveSelected={handleRemoveSelected}
         handleCombineSelected={handleCombineSelected}
+        handleCombineWeek={handleCombineWeek}
       />
       {message?.length !== 0 && (
         <p className='text-center text-sm text-white/70 py-20'>{message}</p>
