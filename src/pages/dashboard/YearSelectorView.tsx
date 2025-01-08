@@ -42,9 +42,9 @@ export const YearSelectorView: React.FC<YearSelectorViewProps> = ({
   handleYearSelect = () => {},
   handleDisableBreadcrumb = () => {}
 }) => {
-  const [yearsBalances, setYearsBalances] = useState<{ [key: string]: YearBalanceType } | null>(
-    null
-  )
+  const [yearsBalances, setYearsBalances] = useState<{
+    [key: string]: YearBalanceType
+  } | null>(null)
   const [yearsBalancesTotal, setYearsBalancesTotal] = useState(0)
   const [isBusy, setIsBusy] = useState(false)
   const { setIsNavDisabled } = navStore()
@@ -99,7 +99,9 @@ export const YearSelectorView: React.FC<YearSelectorViewProps> = ({
       </section>
       <p className='text-right flex flex-col mb-10'>
         <span className='text-sm text-dove-gray-300'>Balance total:</span>{' '}
-        <span className='text-2xl font-mono'>{formatHNL(yearsBalancesTotal)}</span>
+        <span className='text-2xl font-mono'>
+          {formatHNL(yearsBalancesTotal)}
+        </span>
       </p>
     </>
   )

@@ -144,6 +144,7 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
           Number(price)
         )}`
       )
+      toast.success(`${formattedClientName} agregado`)
     }
     if (clientId == null) {
       /* in case it is a new client in the current registry */
@@ -166,6 +167,7 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
       storeCurrentRegistry.addHistoryAction(
         `Agregar ${amount} artículos de ${formatHNL(Number(price))} a ${formattedClientName}`
       )
+      toast.success(`${formattedClientName} actualizado`)
     }
     onResetForm()
     focusClientInput()

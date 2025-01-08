@@ -1,5 +1,4 @@
 import { Breadcrumb, LayoutWrapper, Navbar } from '@/components'
-import { dbGetYearsWithRegistries } from '@/firebase/db/registries'
 import { useBreadcrumb } from '@/hooks'
 import { DashboardBreadcrumbItems } from '@/lib/enums'
 import { CurrentRegistryType } from '@/lib/types/registries'
@@ -11,37 +10,59 @@ import { MONTHS } from './constants'
 import { MonthView } from './month/MonthView'
 import { RegistryView, currentRegistryStore } from './registry'
 import { MonthSelectorView } from './MonthSelectorView'
+import { dbGetYearsBalances } from '@/firebase/db/balances'
 
 const now = new Date()
 export const Dashboard = () => {
+  const [isYearLoading, setIsYearLoading] = useState(false)
   const [isYearsLoaded, setIsYearsLoaded] = useState(false)
   const { activeUser } = activeUserStore()
   const storeRegistries = registriesStore()
   const storeCurrentRegistry = currentRegistryStore()
-  const { breadcrumb, setBreadcrumb, setItem, getItem, isCompleteTil, isPathComplete } =
-    useBreadcrumb<DashboardBreadcrumbItems>([
-      { id: DashboardBreadcrumbItems.displayName, value: activeUser?.displayName ?? '' },
-      { id: DashboardBreadcrumbItems.year, value: `${now.getFullYear()}` },
-      { id: DashboardBreadcrumbItems.month, value: MONTHS[now.getMonth()] },
-      { id: DashboardBreadcrumbItems.registry, value: '' }
-    ])
+  const {
+    breadcrumb,
+    setBreadcrumb,
+    setItem,
+    getItem,
+    isCompleteTil,
+    isPathComplete
+  } = useBreadcrumb<DashboardBreadcrumbItems>([
+    {
+      id: DashboardBreadcrumbItems.displayName,
+      value: activeUser?.displayName ?? ''
+    },
+    { id: DashboardBreadcrumbItems.year, value: `${now.getFullYear()}` },
+    { id: DashboardBreadcrumbItems.month, value: MONTHS[now.getMonth()] },
+    { id: DashboardBreadcrumbItems.registry, value: '' }
+  ])
   const [isBreadcrumbDisabled, setIsBreadcrumbDisabled] = useState(false)
   useEffect(() => {
-    if (isYearsLoaded) return
-    dbGetYearsWithRegistries(activeUser?.uid ?? '').then((res): void => {
-      if (!res.ok) {
-        toast.error(res?.error ?? '')
-        return
-      }
-      storeRegistries?.setYears(res.years)
-      setIsYearsLoaded(true)
-    })
+    if (isYearsLoaded || isYearLoading) return
+    setIsYearLoading(true)
+    dbGetYearsBalances(activeUser?.uid ?? '')
+      .then((res) => {
+        if (!res.ok) {
+          toast.error(res?.error ?? '')
+          return
+        }
+        const years = res.balances.map((b) => b.year)
+        const now = new Date()
+        const hasCurrentYear =
+          years.find((year) => year === `${now.getFullYear()}`) !== undefined
+        if (!hasCurrentYear) years.push(`${now.getFullYear()}`)
+        storeRegistries?.setYears(years)
+        setIsYearsLoaded(true)
+      })
+      .finally(() => setIsYearLoading(false))
   }, [activeUser?.uid, storeRegistries, isYearsLoaded])
   const handleNewRegistry = (registryId = '') => {
     const year = Number(getItem(DashboardBreadcrumbItems.year))
-    const month = MONTHS.findIndex((month) => month === getItem(DashboardBreadcrumbItems.month))
+    const month = MONTHS.findIndex(
+      (month) => month === getItem(DashboardBreadcrumbItems.month)
+    )
     const now = new Date()
-    const day = now.getFullYear() === year && now.getMonth() === month ? now.getDate() : 1
+    const day =
+      now.getFullYear() === year && now.getMonth() === month ? now.getDate() : 1
     const registryInProgress = localStorage.getItem('registry-in-progress')
     const registry = {
       id: registryId,
@@ -87,7 +108,9 @@ export const Dashboard = () => {
           <YearSelectorView
             uid={activeUser?.uid}
             years={storeRegistries?.years}
-            handleYearSelect={(year) => setItem(DashboardBreadcrumbItems.year, year)}
+            handleYearSelect={(year) =>
+              setItem(DashboardBreadcrumbItems.year, year)
+            }
             handleDisableBreadcrumb={handleDisableBreadcrumb}
           />
         )}
@@ -96,7 +119,9 @@ export const Dashboard = () => {
             uid={activeUser?.uid}
             year={getItem(DashboardBreadcrumbItems.year)}
             months={MONTHS}
-            handleMonthSelect={(month) => setItem(DashboardBreadcrumbItems.month, month)}
+            handleMonthSelect={(month) =>
+              setItem(DashboardBreadcrumbItems.month, month)
+            }
             handleDisableBreadcrumb={handleDisableBreadcrumb}
           />
         )}
@@ -119,7 +144,9 @@ export const Dashboard = () => {
               if (isNaN(monthNumber)) return
               if (year.toString() !== getItem(DashboardBreadcrumbItems.year))
                 setItem(DashboardBreadcrumbItems.year, `${year}`)
-              if (MONTHS[monthNumber] !== getItem(DashboardBreadcrumbItems.month))
+              if (
+                MONTHS[monthNumber] !== getItem(DashboardBreadcrumbItems.month)
+              )
                 setItem(DashboardBreadcrumbItems.month, MONTHS[monthNumber])
             }}
             handleClearRegistry={handleClearRegistry}
