@@ -156,8 +156,6 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
           onConfirm: () => {
             createNewClient()
             onResetForm()
-          },
-          onBoth: () => {
             focusClientInput()
           }
         })
