@@ -19,9 +19,12 @@ import { useEffect, useState } from 'react'
 import { currentRegistryStore } from './currentRegistryStore'
 import { ClientModalTabs } from '@/lib/enums'
 import { MONTHS } from '../constants'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 
-const INITIAL_CLIENT_MODAL = { client: null, activeTab: ClientModalTabs.articles }
+const INITIAL_CLIENT_MODAL = {
+  client: null,
+  activeTab: ClientModalTabs.articles
+}
 
 export const RegistryTable: React.FC<RegistryTableProps> = ({
   year,
@@ -66,14 +69,18 @@ export const RegistryTable: React.FC<RegistryTableProps> = ({
       selectedDate.getMonth().toString()
     )
   }
-  const handleRemoveArticles = (purgedArticles: ArticleType[], priceOfArticlesToRemove: number) => {
+  const handleRemoveArticles = (
+    purgedArticles: ArticleType[],
+    priceOfArticlesToRemove: number
+  ) => {
     if (clientModal?.client?.id == null) return
     if (purgedArticles.length === 0) {
       removeClient(clientModal.client.id)
       addHistoryAction(`Eliminar cliente ${clientModal.client.name}`)
     } else {
       updateArticles(clientModal.client.id, purgedArticles)
-      const removedArticlesAmount = clientModal.client.articles.length - purgedArticles.length
+      const removedArticlesAmount =
+        clientModal.client.articles.length - purgedArticles.length
       addHistoryAction(
         `Eliminar ${removedArticlesAmount} artículo${
           removedArticlesAmount === 1 ? '' : 's'
@@ -87,23 +94,29 @@ export const RegistryTable: React.FC<RegistryTableProps> = ({
     const clientId = getClientIdFromName(currentRegistry.clients, newName)
     if (clientId == null) {
       updateClientName(clientModal.client.id, newName)
-      addHistoryAction(`Cambiar nombre de ${clientModal.client.name} a ${newName}`)
+      addHistoryAction(
+        `Cambiar nombre de ${clientModal.client.name} a ${newName}`
+      )
       setClientModal(INITIAL_CLIENT_MODAL)
       return
     }
     showConfirmModal({
-      message: `Ya existe un cliente llamado <strong>${newName}</strong>. ¿Desea unificarlos?`,
+      message: `Ya existe un cliente llamado ${newName}. ¿Desea unificarlos?`,
       onConfirm: () => {
         if (clientModal?.client?.id == null) return
         mergeClients(clientModal?.client?.id, clientId)
-        addHistoryAction(`Unificar cliente ${clientModal.client.name} con ${newName}`)
+        addHistoryAction(
+          `Unificar cliente ${clientModal.client.name} con ${newName}`
+        )
         setClientModal(INITIAL_CLIENT_MODAL)
       }
     })
   }
   const maxDaysInCurrentMonth = calcDaysInMonth(month, year)
   const handleDateUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const [selectedYear, selectedMonth, selectedDay] = e.target.value.split('-').map(Number)
+    const [selectedYear, selectedMonth, selectedDay] = e.target.value
+      .split('-')
+      .map(Number)
     const selectedMonthIndex = selectedMonth - 1
     const selectedDate = new Date(selectedYear, selectedMonthIndex, selectedDay)
     const isInvalidDate =
@@ -117,7 +130,9 @@ export const RegistryTable: React.FC<RegistryTableProps> = ({
     }
     if (selectedDay > maxDaysInCurrentMonth) {
       setInputValue('date', formatInputDate(currentRegistry.date))
-      toast.error('El día seleccionado es mayor que el máximo de días del mes seleccionado.')
+      toast.error(
+        'El día seleccionado es mayor que el máximo de días del mes seleccionado.'
+      )
       return
     }
     const yearOrMonthChanged =
@@ -125,7 +140,9 @@ export const RegistryTable: React.FC<RegistryTableProps> = ({
       selectedMonthIndex !== MONTHS.findIndex((m) => m === month)
     if (currentRegistry?.isEditing && yearOrMonthChanged) {
       setInputValue('date', formatInputDate(currentRegistry.date))
-      toast.error('No se puede cambiar el año o mes cuando se está editando el registro.')
+      toast.error(
+        'No se puede cambiar el año o mes cuando se está editando el registro.'
+      )
       return
     }
     if (!currentRegistry?.isEditing) updateBreadcrumbOnDateChange(selectedDate)
@@ -174,28 +191,39 @@ export const RegistryTable: React.FC<RegistryTableProps> = ({
         />
       </section>
       <section className='bg-tundora-950 rounded-lg mb-24'>
-        <TableHeader items={REGISTRY_TABLE_COLUMNS(currentRegistry.clients?.length)} />
+        <TableHeader
+          items={REGISTRY_TABLE_COLUMNS(currentRegistry.clients?.length)}
+        />
         {sortClientsByName(currentRegistry.clients)?.map((client) => {
           const { id, name, articles } = client
           return (
             <TableRow
               key={id}
-              items={REGISTRY_TABLE_ROWS(name, articles.length, calcClientTotal(articles))}
+              items={REGISTRY_TABLE_ROWS(
+                name,
+                articles.length,
+                calcClientTotal(articles)
+              )}
               buttons={REGISTRY_TABLE_ROW_BUTTONS({
                 removeIcon: <TrashIcon size='15px' />,
                 articlesIcon: <ArchiveIcon size='15px' />,
                 editIcon: <EditPencilIcon size='15px' />,
                 onRemove: () => {
                   showConfirmModal({
-                    message: `Eliminar el cliente <strong>${name}</strong>`,
+                    message: `Eliminar el cliente ${name}`,
                     onConfirm: () => {
                       removeClient(id)
                       addHistoryAction(`Eliminar cliente ${name}`)
                     }
                   })
                 },
-                onArticles: () => setClientModal({ client, activeTab: ClientModalTabs.articles }),
-                onEdit: () => setClientModal({ client, activeTab: ClientModalTabs.edit })
+                onArticles: () =>
+                  setClientModal({
+                    client,
+                    activeTab: ClientModalTabs.articles
+                  }),
+                onEdit: () =>
+                  setClientModal({ client, activeTab: ClientModalTabs.edit })
               })}
             />
           )

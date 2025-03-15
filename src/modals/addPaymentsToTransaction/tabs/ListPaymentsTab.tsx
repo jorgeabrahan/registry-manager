@@ -1,13 +1,16 @@
 import { ListSelectIcon } from '@/assets/icons'
 import { MiniSecondaryClickable, SecondaryClickable } from '@/components'
-import { TransactionPaymentType, TransactionType } from '@/lib/types/transactions'
+import {
+  TransactionPaymentType,
+  TransactionType
+} from '@/lib/types/transactions'
 import { formatDateFriendly, formatHNL } from '@/lib/utils'
 import { selectedPaymentsStore } from './selectedPaymentsStore'
 import { useEffect } from 'react'
-import toast from 'react-hot-toast'
 import { useConfirmModal } from '@/hooks'
 import { dbUpdateTransaction } from '@/firebase/db/transactions'
 import { transactionsStore } from '@/zustand/transactionsStore'
+import { toast } from 'sonner'
 
 const ListPayment: React.FC<ListPaymentProps> = ({
   payment,
@@ -55,8 +58,12 @@ export const ListPaymentsTab: React.FC<ListPaymentsTabProps> = ({
   isBusy,
   setIsBusy
 }) => {
-  const { selectedPayments, addSelectedPayment, removeSelectedPayment, clearSelectedPayments } =
-    selectedPaymentsStore()
+  const {
+    selectedPayments,
+    addSelectedPayment,
+    removeSelectedPayment,
+    clearSelectedPayments
+  } = selectedPaymentsStore()
   const { updateTransaction } = transactionsStore()
   const { showConfirmModal } = useConfirmModal()
   useEffect(() => {
@@ -72,28 +79,33 @@ export const ListPaymentsTab: React.FC<ListPaymentsTabProps> = ({
       onConfirm: () => {
         const newTransaction = {
           ...transaction,
-          payments: transaction.payments?.filter((payment) => !selectedPayments.includes(payment.id))
+          payments: transaction.payments?.filter(
+            (payment) => !selectedPayments.includes(payment.id)
+          )
         }
         const tIdUpdatingTransaction = toast.loading('Actualizando transacción')
         const updatingError = 'Error al actualizar la transacción'
         setIsBusy(true)
-        dbUpdateTransaction(uid, year, month, newTransaction).then((res) => {
-          if (!res.ok) {
+        dbUpdateTransaction(uid, year, month, newTransaction)
+          .then((res) => {
+            if (!res.ok) {
+              toast.dismiss(tIdUpdatingTransaction)
+              toast.error(updatingError)
+              return
+            }
+            toast.dismiss(tIdUpdatingTransaction)
+            toast.success('Pagos eliminados correctamente')
+            updateTransaction(year, month, newTransaction)
+            setLocalTransaction(newTransaction)
+            clearSelectedPayments()
+          })
+          .catch(() => {
             toast.dismiss(tIdUpdatingTransaction)
             toast.error(updatingError)
-            return
-          }
-          toast.dismiss(tIdUpdatingTransaction)
-          toast.success('Pagos eliminados correctamente')
-          updateTransaction(year, month, newTransaction)
-          setLocalTransaction(newTransaction)
-          clearSelectedPayments()
-        }).catch(() => {
-          toast.dismiss(tIdUpdatingTransaction)
-          toast.error(updatingError)
-        }).finally(() => {
-          setIsBusy(false)
-        })
+          })
+          .finally(() => {
+            setIsBusy(false)
+          })
       }
     })
   }
@@ -121,7 +133,9 @@ export const ListPaymentsTab: React.FC<ListPaymentsTabProps> = ({
           isDisabled={selectedPayments.length === 0}
           handleClick={clearSelectedPayments}
         >
-          <span className='text-nowrap text-sm pointer-events-none'>Deseleccionar todo</span>
+          <span className='text-nowrap text-sm pointer-events-none'>
+            Deseleccionar todo
+          </span>
         </SecondaryClickable>
         <SecondaryClickable
           isDisabled={selectedPayments.length === 0}

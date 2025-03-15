@@ -4,9 +4,9 @@ import { Dashboard } from './pages/dashboard'
 import { useEffect } from 'react'
 import { restoreUserSession } from './firebase/auth'
 import { dbGetLicenseByUID } from './firebase/db/licenses'
-import { Toaster } from 'react-hot-toast'
 import { LicenseType } from './lib/types/licenses'
 import { ExpiredLicenseDashboard } from './pages/dashboard/ExpiredLicenseDashboard'
+import { Toaster } from 'sonner'
 
 function ManageRegistryApp() {
   const { activeUser, setActiveUser } = activeUserStore()
@@ -39,6 +39,7 @@ function ManageRegistryApp() {
   return (
     <>
       <Toaster
+        richColors
         toastOptions={{
           duration: 3000
         }}

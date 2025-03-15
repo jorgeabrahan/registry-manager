@@ -1,14 +1,26 @@
-import { Field, PrimaryClickable, SelectField, TextareaField } from '@/components'
+import {
+  Field,
+  PrimaryClickable,
+  SelectField,
+  TextareaField
+} from '@/components'
 import { useForm } from '@/hooks'
 import { TRANSACTION_TYPES_OPTIONS } from '@/lib/consts'
 import { TransactionType } from '@/lib/types/transactions'
 import { useState } from 'react'
 import { ModalLayout } from '../ModalLayout'
-import { calcCreditTransactionPaymentsReceived, checkEmpty, checkInexactPrice, checkNumExact, checkNumMin, getDayOptions } from '@/lib/utils'
-import toast from 'react-hot-toast'
+import {
+  calcCreditTransactionPaymentsReceived,
+  checkEmpty,
+  checkInexactPrice,
+  checkNumExact,
+  checkNumMin,
+  getDayOptions
+} from '@/lib/utils'
 import { dbUpdateTransaction } from '@/firebase/db/transactions'
 import { transactionsStore } from '@/zustand/transactionsStore'
 import { TransactionTypes } from '@/lib/enums'
+import { toast } from 'sonner'
 
 export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
   handleHideModal = () => {},
@@ -86,7 +98,9 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
     }
     performSubmitAction()
   }
-  const handleUpdateTransactionSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdateTransactionSubmit = (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault()
     if (isBusy) return
     validateForm()
@@ -117,11 +131,21 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
         >
           Tipo de transacción
         </SelectField>
-        <Field value={name} handleChange={onInputChange} slug='name' formErrors={formErrors}>
+        <Field
+          value={name}
+          handleChange={onInputChange}
+          slug='name'
+          formErrors={formErrors}
+        >
           Transacción
         </Field>
 
-        <Field value={amount} handleChange={onInputChange} slug='amount' formErrors={formErrors}>
+        <Field
+          value={amount}
+          handleChange={onInputChange}
+          slug='amount'
+          formErrors={formErrors}
+        >
           Monto de transacción
         </Field>
         <TextareaField
@@ -134,7 +158,9 @@ export const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
           Descripción de transacción
         </TextareaField>
         <PrimaryClickable
-          className={`w-max ml-auto ${isBusy && 'opacity-50 pointer-events-none'}`}
+          className={`w-max ml-auto ${
+            isBusy && 'opacity-50 pointer-events-none'
+          }`}
           isDisabled={isBusy}
           type='submit'
         >

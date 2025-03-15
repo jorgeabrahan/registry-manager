@@ -4,17 +4,24 @@ import {
   dbRemoveSelectedRegistries
 } from '@/firebase/db/registries'
 import { useConfirmModal } from '@/hooks'
-import { CurrentRegistryType, MergedRegistriesType, RegistryType } from '@/lib/types/registries'
+import {
+  CurrentRegistryType,
+  MergedRegistriesType,
+  RegistryType
+} from '@/lib/types/registries'
 import { formatDateFriendly } from '@/lib/utils'
-import { mergeRegistries, sortRegistriesNewestFirst } from '@/lib/utils/registryUtils'
+import {
+  mergeRegistries,
+  sortRegistriesNewestFirst
+} from '@/lib/utils/registryUtils'
 import { MergedRegistriesModal } from '@/modals/mergedRegistries'
 import { navStore, registriesStore } from '@/zustand'
 import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 import { v4 as uuid } from 'uuid'
 import { RegistriesNav } from './RegistriesNav'
 import { Registry } from './Registry'
 import { selectedRegistryStore } from './selectedRegistriesStore'
+import { toast } from 'sonner'
 
 export const RegistriesTab: React.FC<RegistriesTabProps> = ({
   uid = '',
@@ -27,11 +34,13 @@ export const RegistriesTab: React.FC<RegistriesTabProps> = ({
   const { showConfirmModal } = useConfirmModal()
   const [monthFetched, setMonthFetched] = useState(false)
   const storeRegistries = registriesStore()
-  const { selectedRegistries, clearSelectedRegistries } = selectedRegistryStore()
+  const { selectedRegistries, clearSelectedRegistries } =
+    selectedRegistryStore()
   const [message, setMessage] = useState('')
   const [isBusy, setIsBusy] = useState(false)
   const { setIsNavDisabled } = navStore()
-  const [mergedRegistries, setMergedRegistries] = useState<MergedRegistriesType | null>(null)
+  const [mergedRegistries, setMergedRegistries] =
+    useState<MergedRegistriesType | null>(null)
   /* effect to enable and disable breadcrumb, and navbar whenever the isBusy state changes */
   useEffect(() => {
     handleDisableBreadcrumb(isBusy || !monthFetched)
@@ -88,7 +97,9 @@ export const RegistriesTab: React.FC<RegistriesTabProps> = ({
   const handleRemove = (registry: RegistryType) => {
     clearSelectedRegistries()
     showConfirmModal({
-      message: `¿Seguro que desea eliminar el registro del ${formatDateFriendly(registry.date)}?`,
+      message: `¿Seguro que desea eliminar el registro del ${formatDateFriendly(
+        registry.date
+      )}?`,
       onConfirm: () => {
         setIsBusy(true)
         const errorMessage = 'El registro no pudo ser eliminado.'
@@ -118,9 +129,16 @@ export const RegistriesTab: React.FC<RegistriesTabProps> = ({
       clearSelectedRegistries()
     }
     const removeSelectedRegistries = async () => {
-      const tIdRemoveSelected = toast.loading('Eliminando registros seleccionados')
+      const tIdRemoveSelected = toast.loading(
+        'Eliminando registros seleccionados'
+      )
       try {
-        const res = await dbRemoveSelectedRegistries(uid, year, month, selectedRegistries)
+        const res = await dbRemoveSelectedRegistries(
+          uid,
+          year,
+          month,
+          selectedRegistries
+        )
         if (!res.ok) {
           toast.dismiss(tIdRemoveSelected)
           toast.error(res?.error ?? '')
@@ -155,7 +173,9 @@ export const RegistriesTab: React.FC<RegistriesTabProps> = ({
     const currentMonthRegistries = storeRegistries.months[`${year}-${month}`]
     const currentDate = new Date()
     const startOfWeek =
-      currentDate.getDate() - currentDate.getDay() + (currentDate.getDay() === 0 ? -6 : 1)
+      currentDate.getDate() -
+      currentDate.getDay() +
+      (currentDate.getDay() === 0 ? -6 : 1)
     const endOfWeek = startOfWeek + 6
     const startDate = new Date(
       currentDate.getFullYear(),
@@ -170,7 +190,9 @@ export const RegistriesTab: React.FC<RegistriesTabProps> = ({
 
     const weekRegistries = currentMonthRegistries.filter((registry) => {
       const registryDate = new Date(registry.date)
-      return registryDate >= new Date(startDate) && registryDate <= new Date(endDate)
+      return (
+        registryDate >= new Date(startDate) && registryDate <= new Date(endDate)
+      )
     })
     setMergedRegistries(mergeRegistries(weekRegistries))
   }
@@ -195,7 +217,9 @@ export const RegistriesTab: React.FC<RegistriesTabProps> = ({
         <p className='text-center text-sm text-white/70 py-20'>{message}</p>
       )}
       <section className='grid gap-5 my-5'>
-        {sortRegistriesNewestFirst(storeRegistries.months[`${year}-${month}`])?.map((registry) => (
+        {sortRegistriesNewestFirst(
+          storeRegistries.months[`${year}-${month}`]
+        )?.map((registry) => (
           <Registry
             key={registry?.id}
             registry={registry}

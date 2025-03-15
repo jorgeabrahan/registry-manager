@@ -1,20 +1,35 @@
-import { AutoComplete, Field, PrimaryClickable, SelectField, TextareaField } from '@/components'
+import {
+  AutoComplete,
+  Field,
+  PrimaryClickable,
+  SelectField,
+  TextareaField
+} from '@/components'
 import {
   dbAddTransactionNameRecommendations,
   dbGetTransactionNameRecommendations
 } from '@/firebase/db/transactionNameRecommendations'
-import { dbCreateTransaction, dbGetMonthTransactions } from '@/firebase/db/transactions'
+import {
+  dbCreateTransaction,
+  dbGetMonthTransactions
+} from '@/firebase/db/transactions'
 import { useCurrentDate, useForm } from '@/hooks'
 import { TransactionTypes } from '@/lib/enums'
-import { checkEmpty, checkInexactPrice, checkNumExact, checkNumInRange, getDayOptions } from '@/lib/utils'
+import {
+  checkEmpty,
+  checkInexactPrice,
+  checkNumExact,
+  checkNumInRange,
+  getDayOptions
+} from '@/lib/utils'
 import { navStore } from '@/zustand'
 import { transactionsStore } from '@/zustand/transactionsStore'
 import { useEffect, useRef, useState } from 'react'
-import toast from 'react-hot-toast'
 import { v4 as uuid } from 'uuid'
 import { TransactionsList } from './TransactionsList'
 import { TRANSACTION_TYPES_OPTIONS } from '@/lib/consts'
 import { MONTHS } from '@/pages/dashboard/constants'
+import { toast } from 'sonner'
 
 enum AddTransactionFields {
   dateDay = 'dateDay',
@@ -32,8 +47,8 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
   registriesTotal = 0
 }) => {
   const transactionInputRef = useRef<HTMLInputElement>(null)
-  const { currentDay, currentMonth, currentYear } = useCurrentDate();
-  const isCurrentMonth = MONTHS.findIndex(m => m === month) === currentMonth;
+  const { currentDay, currentMonth, currentYear } = useCurrentDate()
+  const isCurrentMonth = MONTHS.findIndex((m) => m === month) === currentMonth
   const isCurrentYear = parseInt(year, 10) === currentYear
   const INITIAL_FORM = {
     dateDay: isCurrentMonth && isCurrentYear ? currentDay.toString() : '1',
@@ -116,7 +131,14 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
         setMessage('Error al obtener las transacciones del mes.')
       })
       .finally(() => setTransactionsFetched(true))
-  }, [uid, year, month, transactionsByMonth, addTransactionsMonth, transactionsFetched])
+  }, [
+    uid,
+    year,
+    month,
+    transactionsByMonth,
+    addTransactionsMonth,
+    transactionsFetched
+  ])
 
   const createTransaction = async () => {
     setIsBusy(true)
@@ -148,10 +170,15 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
       onResetForm()
       return
     }
-    const tIdAddTransactionNameRecommendation = toast.loading('Añadiendo recomendación')
+    const tIdAddTransactionNameRecommendation = toast.loading(
+      'Añadiendo recomendación'
+    )
     try {
       const newRecommendations = [...transactionNameRecommendations, name]
-      const res = await dbAddTransactionNameRecommendations(uid, newRecommendations)
+      const res = await dbAddTransactionNameRecommendations(
+        uid,
+        newRecommendations
+      )
       if (!res.ok) return
       toast.dismiss(tIdAddTransactionNameRecommendation)
       toast.success('Recomendación añadida con éxito')
@@ -166,11 +193,18 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
   }
   const validateForm = () => {
     let errors = []
-    errors.push(onInputError(AddTransactionFields.dateDay, checkNumExact(dateDay)))
-    errors.push(onInputError(AddTransactionFields.name, checkEmpty(name)))
-    errors.push(onInputError(AddTransactionFields.amount, checkInexactPrice(amount)))
     errors.push(
-      onInputError(AddTransactionFields.description, checkNumInRange(description.length, [0, 1000], true))
+      onInputError(AddTransactionFields.dateDay, checkNumExact(dateDay))
+    )
+    errors.push(onInputError(AddTransactionFields.name, checkEmpty(name)))
+    errors.push(
+      onInputError(AddTransactionFields.amount, checkInexactPrice(amount))
+    )
+    errors.push(
+      onInputError(
+        AddTransactionFields.description,
+        checkNumInRange(description.length, [0, 1000], true)
+      )
     )
     if (errors.includes(true)) return
     createTransaction()
@@ -218,7 +252,12 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
           >
             Transacción
           </AutoComplete>
-          <Field value={amount} handleChange={onInputChange} slug='amount' formErrors={formErrors}>
+          <Field
+            value={amount}
+            handleChange={onInputChange}
+            slug='amount'
+            formErrors={formErrors}
+          >
             Monto de transacción
           </Field>
         </section>
@@ -234,7 +273,9 @@ export const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
         </TextareaField>
 
         <PrimaryClickable
-          className={`w-max ml-auto ${isBusy && 'opacity-50 pointer-events-none'}`}
+          className={`w-max ml-auto ${
+            isBusy && 'opacity-50 pointer-events-none'
+          }`}
           isDisabled={isBusy}
           type='submit'
         >

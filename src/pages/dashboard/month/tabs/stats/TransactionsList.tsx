@@ -5,11 +5,11 @@ import { TransactionTabs, TransactionTypes } from '@/lib/enums'
 import { useEffect, useMemo, useState } from 'react'
 import { calcTransactionsTotal, formatHNL } from '@/lib/utils'
 import { dbRemoveTransaction } from '@/firebase/db/transactions'
-import toast from 'react-hot-toast'
 import { transactionsStore } from '@/zustand/transactionsStore'
 import { EditTransactionModal } from '@/modals/editTransaction'
 import { MonthBalance } from './MonthBalance'
 import { AddPaymentToTransactionModal } from '@/modals/addPaymentsToTransaction/AddPaymentToTransactionModal'
+import { toast } from 'sonner'
 
 const transactionTypeBasedOnTab = {
   [TransactionTabs.income]: TransactionTypes.income,
@@ -26,10 +26,15 @@ export const TransactionsList: React.FC<TransactionsListProps> = ({
   setIsBusy,
   registriesTotal = 0
 }) => {
-  const [activeTab, setActiveTab] = useState<TransactionTabs>(TransactionTabs.all)
-  const [tabTransactions, setTabTransactions] = useState<TransactionType[]>(transactions)
-  const [transactionToEdit, setTransactionToEdit] = useState<TransactionType | null>(null)
-  const [transactionToAddPayments, setTransactionToAddPayments] = useState<TransactionType | null>(null)
+  const [activeTab, setActiveTab] = useState<TransactionTabs>(
+    TransactionTabs.all
+  )
+  const [tabTransactions, setTabTransactions] =
+    useState<TransactionType[]>(transactions)
+  const [transactionToEdit, setTransactionToEdit] =
+    useState<TransactionType | null>(null)
+  const [transactionToAddPayments, setTransactionToAddPayments] =
+    useState<TransactionType | null>(null)
   const { removeTransaction } = transactionsStore()
   useEffect(() => {
     if (activeTab === TransactionTabs.all) {
@@ -38,7 +43,8 @@ export const TransactionsList: React.FC<TransactionsListProps> = ({
     }
     setTabTransactions(
       transactions.filter(
-        (transaction) => transaction.type === transactionTypeBasedOnTab[activeTab]
+        (transaction) =>
+          transaction.type === transactionTypeBasedOnTab[activeTab]
       )
     )
   }, [transactions, activeTab])
@@ -80,7 +86,9 @@ export const TransactionsList: React.FC<TransactionsListProps> = ({
         }}
       />
       {tabTransactions.length === 0 && (
-        <p className='text-center text-sm text-white/70 py-20'>No hay {activeTab.toLowerCase()}.</p>
+        <p className='text-center text-sm text-white/70 py-20'>
+          No hay {activeTab.toLowerCase()}.
+        </p>
       )}
       {tabTransactions.length !== 0 && (
         <section className='mb-4'>
@@ -93,13 +101,18 @@ export const TransactionsList: React.FC<TransactionsListProps> = ({
                 month={month}
                 onRemoveTransaction={() => onRemoveTransaction(transaction)}
                 onEditTransaction={() => onEditTransaction(transaction)}
-                onAddPaymentTransaction={() => onAddPaymentTransaction(transaction)}
+                onAddPaymentTransaction={() =>
+                  onAddPaymentTransaction(transaction)
+                }
               />
             ))}
           </div>
           <div>
             <p className='text-dove-gray-300 leading-3 text-right font-light text-sm'>
-              Total {activeTab != TransactionTabs.all ? activeTab.toLowerCase() : 'transacciones'}
+              Total{' '}
+              {activeTab != TransactionTabs.all
+                ? activeTab.toLowerCase()
+                : 'transacciones'}
             </p>{' '}
             <p className='text-2xl font-mono text-right font-semibold'>
               {formatHNL(calcTransactionsTotal(tabTransactions))}

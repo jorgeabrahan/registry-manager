@@ -5,7 +5,7 @@ import { MonthBalanceType } from '@/lib/types/balances'
 import { formatHNL } from '@/lib/utils'
 import { navStore } from '@/zustand'
 import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 
 const MonthSelector: React.FC<MonthSelectorProps> = ({
   month,
@@ -16,7 +16,8 @@ const MonthSelector: React.FC<MonthSelectorProps> = ({
   const monthRegistriesTotal = balances?.[month]?.registriesTotal ?? 0
   const monthTransactionTotal = balances?.[month]?.transactionsTotal ?? 0
   const monthBalance =
-    (balances?.[month]?.registriesTotal ?? 0) + (balances?.[month]?.transactionsTotal ?? 0)
+    (balances?.[month]?.registriesTotal ?? 0) +
+    (balances?.[month]?.transactionsTotal ?? 0)
   const getBalanceTag = () => {
     if (monthBalance === 0) return null
     return monthBalance > 0 ? <SurplusTag /> : <DeficitTag />
@@ -54,7 +55,9 @@ export const MonthSelectorView: React.FC<MonthSelectorViewProps> = ({
   year = '',
   handleDisableBreadcrumb = () => {}
 }) => {
-  const [monthsBalances, setMonthsBalances] = useState<{ [key: string]: MonthBalanceType } | null>(null)
+  const [monthsBalances, setMonthsBalances] = useState<{
+    [key: string]: MonthBalanceType
+  } | null>(null)
   const [yearBalance, setYearBalance] = useState(0)
   const [isBusy, setIsBusy] = useState(false)
   const { setIsNavDisabled } = navStore()

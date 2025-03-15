@@ -4,10 +4,10 @@ import { useForm } from '@/hooks'
 import { checkPass } from '@/lib/utils'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import toast from 'react-hot-toast'
 import { ModalLayout } from '../ModalLayout'
 import { MessageTypes } from '@/lib/enums'
 import { FormMessageType } from '@/lib/types'
+import { toast } from 'sonner'
 
 enum FIELDS {
   password = 'password',
@@ -19,8 +19,14 @@ const INITIAL_FORM = {
 }
 
 export const ChangePasswordModal = ({ handleHideModal = () => {} }) => {
-  const { password, updatedPassword, onInputChange, onResetForm, onInputError, formErrors } =
-    useForm(INITIAL_FORM)
+  const {
+    password,
+    updatedPassword,
+    onInputChange,
+    onResetForm,
+    onInputError,
+    formErrors
+  } = useForm(INITIAL_FORM)
   const [formMessage, setFormMessage] = useState<FormMessageType>({
     type: MessageTypes.error,
     text: ''
@@ -46,7 +52,9 @@ export const ChangePasswordModal = ({ handleHideModal = () => {} }) => {
   const validateForm = () => {
     let errors = []
     errors.push(onInputError(FIELDS.password, checkPass(password)))
-    errors.push(onInputError(FIELDS.updatedPassword, checkPass(updatedPassword)))
+    errors.push(
+      onInputError(FIELDS.updatedPassword, checkPass(updatedPassword))
+    )
     if (errors.includes(true)) return
     changePassword()
   }
@@ -56,7 +64,10 @@ export const ChangePasswordModal = ({ handleHideModal = () => {} }) => {
     validateForm()
   }
   return (
-    <ModalLayout handleHideModal={handleHideModal} shouldAllowClose={!isSubmitting}>
+    <ModalLayout
+      handleHideModal={handleHideModal}
+      shouldAllowClose={!isSubmitting}
+    >
       <form className='grid gap-4' onSubmit={handleSubmit}>
         <Field
           type='password'

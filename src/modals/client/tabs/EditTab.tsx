@@ -5,9 +5,12 @@ import { checkNameUpdate, formatName } from '@/lib/utils'
 import React from 'react'
 
 enum FIELDS {
-  name = "name"
+  name = 'name'
 }
-export const EditTab: React.FC<EditTabProps> = ({ client, handleUpdateClientName = () => {} }) => {
+export const EditTab: React.FC<EditTabProps> = ({
+  client,
+  handleUpdateClientName = () => {}
+}) => {
   const { showConfirmModal } = useConfirmModal()
   const { name, onInputChange, onInputError, formErrors } = useForm({
     name: client.name
@@ -18,7 +21,7 @@ export const EditTab: React.FC<EditTabProps> = ({ client, handleUpdateClientName
     if (errors.includes(true)) return
     const formattedName = formatName(name)
     showConfirmModal({
-      message: `Actualizar nombre de <strong>${client.name}</strong> a <strong>${formattedName}</strong>`,
+      message: `Actualizar nombre de ${client.name} a ${formattedName}`,
       onConfirm: () => handleUpdateClientName(formattedName)
     })
   }
@@ -47,6 +50,6 @@ export const EditTab: React.FC<EditTabProps> = ({ client, handleUpdateClientName
 }
 
 type EditTabProps = {
-  client: ClientType,
+  client: ClientType
   handleUpdateClientName: (newName: string) => void
 }

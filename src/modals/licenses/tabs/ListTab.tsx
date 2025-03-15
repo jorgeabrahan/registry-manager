@@ -6,21 +6,30 @@ import { FormMessageType } from '@/lib/types'
 import { formatDateTime } from '@/lib/utils'
 import { licenseStore } from '@/zustand'
 import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 import { licensesStore } from '../licensesStore'
+import { toast } from 'sonner'
 
-const BooleanTag = ({ validation = false, truthyText = '', falsyText = '' }) => {
+const BooleanTag = ({
+  validation = false,
+  truthyText = '',
+  falsyText = ''
+}) => {
   return (
     <span
       className={`w-max rounded-full px-3 py-1 text-xs font-semibold border border-solid ${
-        validation ? 'border-mantis-600 bg-mantis-800/50' : 'border-wewak-600 bg-wewak-800/50'
+        validation
+          ? 'border-mantis-600 bg-mantis-800/50'
+          : 'border-wewak-600 bg-wewak-800/50'
       }`}
     >
       {validation ? truthyText : falsyText}
     </span>
   )
 }
-const LicenseTrait: React.FC<LicenseTraitProps> = ({ children, trait = '' }) => {
+const LicenseTrait: React.FC<LicenseTraitProps> = ({
+  children,
+  trait = ''
+}) => {
   return (
     <p className='text-sm text-white/70'>
       <span className='font-semibold'>{trait}:</span> {children}
@@ -28,7 +37,7 @@ const LicenseTrait: React.FC<LicenseTraitProps> = ({ children, trait = '' }) => 
   )
 }
 type LicenseTraitProps = {
-  children: React.ReactNode,
+  children: React.ReactNode
   trait: string
 }
 
@@ -76,7 +85,9 @@ export const ListTab = () => {
   return (
     <section className='flex flex-col gap-3 overflow-y-scroll h-full hide-scrollbar'>
       {storeLicenses.licenses
-        .filter((license) => license.key !== storeLicense?.loggedUserLicense?.key)
+        .filter(
+          (license) => license.key !== storeLicense?.loggedUserLicense?.key
+        )
         .map((license) => {
           const now = new Date()
           const licenseEndDate = new Date(license?.date?.end ?? '')
@@ -116,7 +127,9 @@ export const ListTab = () => {
               <section className='mt-4 sm:mt-2'>
                 <p className='text-sm text-white/70'>
                   <span className='font-semibold'>Duración:</span>{' '}
-                  {isUnlimited ? 'Ilimitada' : `${Number(license?.daysDuration ?? 0)} días`}
+                  {isUnlimited
+                    ? 'Ilimitada'
+                    : `${Number(license?.daysDuration ?? 0)} días`}
                 </p>
                 {isVinculated && (
                   <>
@@ -124,9 +137,13 @@ export const ListTab = () => {
                       {formatDateTime(license?.date?.start ?? '')}
                     </LicenseTrait>
                     <LicenseTrait trait='Fecha de vencimiento'>
-                      {isUnlimited ? 'Indefinida' : formatDateTime(license?.date?.end ?? '')}
+                      {isUnlimited
+                        ? 'Indefinida'
+                        : formatDateTime(license?.date?.end ?? '')}
                     </LicenseTrait>
-                    <LicenseTrait trait='Usuario vinculado'>{license?.uid ?? ''}</LicenseTrait>
+                    <LicenseTrait trait='Usuario vinculado'>
+                      {license?.uid ?? ''}
+                    </LicenseTrait>
                   </>
                 )}
               </section>
@@ -137,4 +154,3 @@ export const ListTab = () => {
     </section>
   )
 }
-

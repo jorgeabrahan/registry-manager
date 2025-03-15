@@ -26,10 +26,10 @@ import {
 import { activeUserStore, navStore, registriesStore } from '@/zustand'
 import { clientsStore } from '@/zustand/clientsStore'
 import { useEffect, useRef, useState } from 'react'
-import toast from 'react-hot-toast'
 import { v4 as uuid } from 'uuid'
 import { MONTHS } from '../constants'
 import { currentRegistryStore } from './currentRegistryStore'
+import { toast } from 'sonner'
 
 const RegistryHeaderButton: React.FC<RegistryHeaderButtonProps> = ({
   children,
@@ -133,7 +133,8 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
       formattedClientName
     )
     const createNewClient = () => {
-      const uniqueId = getClientIdFromName(dbInitialClients, formattedClientName) ?? uuid()
+      const uniqueId =
+        getClientIdFromName(dbInitialClients, formattedClientName) ?? uuid()
       storeCurrentRegistry.addClient({
         id: uniqueId,
         name: formattedClientName,
@@ -150,7 +151,8 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
       /* in case it is a new client in the current registry */
       if (formattedClientName.split(' ').length === 1) {
         showConfirmModal({
-          message: 'No es recomendable agregar clientes con solo un nombre ¿Desea agregarlo igual?',
+          message:
+            'No es recomendable agregar clientes con solo un nombre ¿Desea agregarlo igual?',
           onConfirm: () => {
             createNewClient()
             onResetForm()
@@ -165,7 +167,9 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
     } else {
       storeCurrentRegistry.addArticles(clientId, clientArticles)
       storeCurrentRegistry.addHistoryAction(
-        `Agregar ${amount} artículos de ${formatHNL(Number(price))} a ${formattedClientName}`
+        `Agregar ${amount} artículos de ${formatHNL(
+          Number(price)
+        )} a ${formattedClientName}`
       )
       toast.success(`${formattedClientName} actualizado`)
     }
@@ -175,7 +179,9 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
   const validateForm = () => {
     let errors = []
     errors.push(onInputError(AddClientFields.price, checkPrice(price)))
-    errors.push(onInputError(AddClientFields.amount, checkAmount(amount, [1, 10])))
+    errors.push(
+      onInputError(AddClientFields.amount, checkAmount(amount, [1, 10]))
+    )
     if (errors.includes(true)) return
     addClient()
   }
@@ -186,10 +192,11 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
   const editRegistry = async (
     registryYear: string,
     registryMonth: string,
-    tIdLoadingRegistry: string
+    tIdLoadingRegistry: string | number
   ) => {
     try {
-      const { isEditing, ...updatedRegistry } = storeCurrentRegistry.currentRegistry
+      const { isEditing, ...updatedRegistry } =
+        storeCurrentRegistry.currentRegistry
       const res = await dbUpdateRegistry(
         activeUser?.uid ?? '',
         registryYear,
@@ -203,7 +210,11 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
       }
       toast.dismiss(tIdLoadingRegistry)
       toast.success(res?.success ?? '')
-      storeRegistries.updateRegistry(registryYear, registryMonth, updatedRegistry)
+      storeRegistries.updateRegistry(
+        registryYear,
+        registryMonth,
+        updatedRegistry
+      )
       handleClearRegistry()
     } catch (_) {
       toast.dismiss(tIdLoadingRegistry)
@@ -215,10 +226,11 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
   const createRegistry = async (
     registryYear: string,
     registryMonth: string,
-    tIdLoadingRegistry: string
+    tIdLoadingRegistry: string | number
   ) => {
     try {
-      const { isEditing, ...createdRegistry } = storeCurrentRegistry.currentRegistry
+      const { isEditing, ...createdRegistry } =
+        storeCurrentRegistry.currentRegistry
       const res = await dbCreateRegistry(
         activeUser?.uid ?? '',
         registryYear,
@@ -250,12 +262,16 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
       return
     }
     setIsBusy(true)
-    const newClients = getNewClients(dbInitialClients, storeCurrentRegistry.currentRegistry.clients)
+    const newClients = getNewClients(
+      dbInitialClients,
+      storeCurrentRegistry.currentRegistry.clients
+    )
     const registryDate = new Date(storeCurrentRegistry.currentRegistry.date)
     const registryYear = `${registryDate.getFullYear()}`
     const registryMonth = MONTHS[registryDate.getMonth()]
     let tIdLoadingClients = null
-    if (newClients.length !== 0) tIdLoadingClients = toast.loading('Guardando clientes')
+    if (newClients.length !== 0)
+      tIdLoadingClients = toast.loading('Guardando clientes')
     let tIdSaveRes = null
     try {
       if (newClients.length !== 0) {
@@ -268,7 +284,9 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
     }
     const isEditing = storeCurrentRegistry.currentRegistry?.isEditing
     toast.dismiss(tIdSaveRes ?? '')
-    const tIdLoadingRegistry = toast.loading(`${isEditing ? 'Actualizando' : 'Creando'} registro`)
+    const tIdLoadingRegistry = toast.loading(
+      `${isEditing ? 'Actualizando' : 'Creando'} registro`
+    )
     if (!isEditing) {
       createRegistry(registryYear, registryMonth, tIdLoadingRegistry)
       return
@@ -277,7 +295,7 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
   }
   const handleClearClients = () => {
     showConfirmModal({
-      message: 'Eliminar <strong>todos</strong> los clientes',
+      message: 'Eliminar todos los clientes',
       onConfirm: () => {
         storeCurrentRegistry.clearClients() // clear store clients
         storeCurrentRegistry.addHistoryAction('Eliminar todos los clientes')
@@ -300,7 +318,10 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
           autoFocus
           isRequired
           autoCompleteValues={sortClientsByName(
-            joinClients(dbInitialClients, storeCurrentRegistry.currentRegistry.clients)
+            joinClients(
+              dbInitialClients,
+              storeCurrentRegistry.currentRegistry.clients
+            )
           )}
           handleAutoCompleteValueSelected={handleClientSelect}
         >
@@ -330,7 +351,9 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
       <nav className='flex flex-col-reverse xs:flex-row items-center justify-end gap-2'>
         <RegistryHeaderButton
           text={`${
-            storeCurrentRegistry.currentRegistry?.isEditing ? 'Actualizar' : 'Guardar'
+            storeCurrentRegistry.currentRegistry?.isEditing
+              ? 'Actualizar'
+              : 'Guardar'
           } registro`}
           handleClick={handleSaveRegistry}
           isDisabled={isBusy}
@@ -344,7 +367,11 @@ export const RegistryForm: React.FC<RegistryFormProps> = ({
         >
           <TrashIcon size='20px' />
         </RegistryHeaderButton>
-        <RegistryHeaderButton text='Agregar cliente' type='submit' isDisabled={isBusy}>
+        <RegistryHeaderButton
+          text='Agregar cliente'
+          type='submit'
+          isDisabled={isBusy}
+        >
           <PlusCircleIcon size='20px' />
         </RegistryHeaderButton>
       </nav>

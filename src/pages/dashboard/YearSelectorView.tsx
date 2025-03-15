@@ -5,7 +5,7 @@ import { YearBalanceType } from '@/lib/types/balances'
 import { formatHNL } from '@/lib/utils'
 import { navStore } from '@/zustand'
 import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 
 const YearSelector: React.FC<YearSelectorProps> = ({
   year = '',

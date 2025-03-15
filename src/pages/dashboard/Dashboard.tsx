@@ -4,13 +4,13 @@ import { DashboardBreadcrumbItems } from '@/lib/enums'
 import { CurrentRegistryType } from '@/lib/types/registries'
 import { activeUserStore, registriesStore } from '@/zustand'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
 import { YearSelectorView } from './YearSelectorView'
 import { MONTHS } from './constants'
 import { MonthView } from './month/MonthView'
 import { RegistryView, currentRegistryStore } from './registry'
 import { MonthSelectorView } from './MonthSelectorView'
 import { dbGetYearsBalances } from '@/firebase/db/balances'
+import { toast } from 'sonner'
 
 const now = new Date()
 export const Dashboard = () => {
